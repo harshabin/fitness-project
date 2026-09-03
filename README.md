@@ -133,7 +133,7 @@ docker-compose down
 2. Set **Root Directory** to repository root.
 3. Set **Build Command**:
    ```bash
-   npm install --legacy-peer-deps && npm run build --filter=@fithealth/types --filter=@fithealth/three-scenes --filter=@fithealth/api
+   npm install --legacy-peer-deps && npx turbo run build --filter=@fithealth/types --filter=@fithealth/three-scenes --filter=@fithealth/api
    ```
 4. Set **Start Command**:
    ```bash
@@ -151,7 +151,7 @@ docker-compose down
    ```
 5. Set **Build Command** to:
    ```bash
-   cd ../.. && npm run build --filter=@fithealth/web...
+   cd ../.. && npx turbo run build --filter=@fithealth/web...
    ```
 6. Add Environment Variable:
    * `NEXT_PUBLIC_API_URL` = `https://your-deployed-api.onrender.com`

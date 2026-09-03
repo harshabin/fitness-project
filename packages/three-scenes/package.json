@@ -14,9 +14,7 @@
     "dev": "tsc --watch --preserveWatchOutput"
   },
   "dependencies": {
-    "@fithealth/types": "*"
-  },
-  "devDependencies": {
+    "@fithealth/types": "*",
     "typescript": "^5.7.3"
   }
 }
