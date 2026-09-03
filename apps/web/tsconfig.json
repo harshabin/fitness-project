@@ -20,8 +20,8 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
-      "@fithealth/types": ["../../packages/types/src/index.ts"],
-      "@fithealth/three-scenes": ["../../packages/three-scenes/src/index.ts"]
+      "@fithealth/types": ["./src/shared/types/index.ts"],
+      "@fithealth/three-scenes": ["./src/shared/three-scenes/index.ts"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
