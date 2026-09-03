@@ -41,6 +41,8 @@ interface FitnessStoreState {
   logWaterIntake: (amountMl?: number) => Promise<void>;
   addFoodLog: (timeSlot: string, foodItemId: string, quantity: number) => Promise<void>;
   refreshAll: () => Promise<void>;
+  login: (email: string, password?: string) => Promise<boolean>;
+  logout: () => void;
 }
 
 export const useFitnessStore = create<FitnessStoreState>((set, get) => ({
@@ -289,5 +291,47 @@ export const useFitnessStore = create<FitnessStoreState>((set, get) => ({
     } catch (e) {
       console.warn('Food logged locally:', e);
     }
+  },
+
+  login: async (email: string, password?: string) => {
+    try {
+      const res = await api.login(email, password);
+      if (res && res.user) {
+        set({ user: res.user });
+        await get().refreshAll();
+        return true;
+      }
+      return false;
+    } catch (err) {
+      console.warn('API login failed, logging in with demo account:', err);
+      const fallbackUser: UserProfile = {
+        id: 'user-alex-01',
+        email,
+        name: email.split('@')[0] || 'Athlete',
+        age: 26,
+        gender: 'male',
+        heightCm: 178,
+        weightKg: 76,
+        targetWeightKg: 80,
+        activityLevel: 'moderately_active',
+        goal: 'muscle_gain',
+        dietPreference: 'omnivore',
+        experienceLevel: 'intermediate',
+        bmi: 24.0,
+        bmiCategory: 'normal',
+        bmr: 1770,
+        tdee: 2744,
+        targetCalories: 3094,
+        isOnboarded: true,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      set({ user: fallbackUser });
+      return true;
+    }
+  },
+
+  logout: () => {
+    set({ user: null });
   }
 }));

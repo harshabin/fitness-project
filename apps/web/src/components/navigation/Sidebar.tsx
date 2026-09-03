@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useFitnessStore } from '@/stores/useFitnessStore';
 import { 
   LayoutDashboard, 
   Dumbbell, 
@@ -11,11 +12,15 @@ import {
   TrendingUp, 
   Sliders, 
   Sparkles,
-  HeartPulse
+  HeartPulse,
+  LogIn,
+  LogOut,
+  UserCheck
 } from 'lucide-react';
 
 export const Sidebar: React.FC = () => {
   const pathname = usePathname();
+  const { user, logout } = useFitnessStore();
 
   const navItems = [
     { href: '/', label: 'Overview', icon: LayoutDashboard },
@@ -24,6 +29,7 @@ export const Sidebar: React.FC = () => {
     { href: '/diet', label: 'Diet & Nutrition', icon: UtensilsCrossed },
     { href: '/progress', label: 'Progress & Health', icon: TrendingUp },
     { href: '/onboarding', label: 'Biometrics & Goals', icon: Sliders },
+    { href: '/login', label: 'User Login & Auth', icon: LogIn },
   ];
 
   return (
@@ -54,7 +60,7 @@ export const Sidebar: React.FC = () => {
                 <span>{item.label}</span>
                 {item.highlight && !isActive && (
                   <span className="hidden lg:inline-block ml-auto px-1.5 py-0.5 rounded text-[9px] font-extrabold uppercase bg-cyan/20 text-cyan">
-                    2D Map
+                    3D Map
                   </span>
                 )}
               </Link>
@@ -63,15 +69,46 @@ export const Sidebar: React.FC = () => {
         </nav>
       </div>
 
-      {/* Bottom Health Shield Badge */}
-      <div className="hidden md:block p-4 rounded-2xl bg-gradient-to-br from-surface to-surface-muted border border-surface-border relative overflow-hidden">
-        <div className="flex items-center space-x-2 text-xs font-bold text-white mb-1">
-          <HeartPulse className="w-4 h-4 text-crimson animate-pulse" />
-          <span>Biometric Engine</span>
+      {/* User Session Card & Biometric Engine Badge */}
+      <div className="hidden md:flex flex-col space-y-3 pt-4 border-t border-surface-border/60">
+        {user ? (
+          <div className="p-3 rounded-2xl bg-surface/80 border border-surface-border flex items-center justify-between">
+            <div className="flex items-center space-x-2.5 min-w-0">
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-cyan to-blue-600 flex items-center justify-center text-slate-950 font-bold text-xs shrink-0">
+                {user.name?.[0] || 'U'}
+              </div>
+              <div className="min-w-0">
+                <div className="text-xs font-bold text-white truncate">{user.name}</div>
+                <div className="text-[10px] text-slate-400 truncate">{user.email}</div>
+              </div>
+            </div>
+            <button
+              onClick={() => logout()}
+              title="Sign Out"
+              className="p-1.5 rounded-lg text-slate-400 hover:text-crimson hover:bg-crimson/10 transition-colors shrink-0"
+            >
+              <LogOut className="w-4 h-4" />
+            </button>
+          </div>
+        ) : (
+          <Link
+            href="/login"
+            className="w-full py-2.5 px-3 rounded-xl bg-cyan/15 hover:bg-cyan/25 border border-cyan/30 text-cyan text-xs font-bold text-center flex items-center justify-center space-x-1.5 transition-all shadow-glow-cyan"
+          >
+            <LogIn className="w-3.5 h-3.5" />
+            <span>Sign In to Account</span>
+          </Link>
+        )}
+
+        <div className="p-3.5 rounded-2xl bg-gradient-to-br from-surface to-surface-muted border border-surface-border relative overflow-hidden">
+          <div className="flex items-center space-x-2 text-xs font-bold text-white mb-1">
+            <HeartPulse className="w-4 h-4 text-crimson animate-pulse" />
+            <span>Biometric Engine</span>
+          </div>
+          <p className="text-[11px] text-slate-400 leading-relaxed">
+            TDEE & progressive overload calculated in real-time.
+          </p>
         </div>
-        <p className="text-[11px] text-slate-400 leading-relaxed">
-          TDEE and progressive overload calculations synced in real-time.
-        </p>
       </div>
     </aside>
   );

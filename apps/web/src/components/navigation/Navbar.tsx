@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { useFitnessStore } from '@/stores/useFitnessStore';
-import { Flame, Droplet, User, Bell, Sparkles } from 'lucide-react';
+import { Flame, Droplet, User, Bell, Sparkles, LogIn } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
   const { user, adherence, dietSummary } = useFitnessStore();
@@ -42,16 +42,27 @@ export const Navbar: React.FC = () => {
           <span className="text-xs font-bold">{(water / 1000).toFixed(1)}L Water</span>
         </div>
 
-        {/* User Profile Pill */}
-        <Link
-          href="/onboarding"
-          className="flex items-center space-x-2.5 p-1.5 pr-3 rounded-full bg-surface-muted hover:bg-surface border border-surface-border transition-colors"
-        >
-          <div className="w-7 h-7 rounded-full bg-gradient-to-br from-cyan to-blue-600 flex items-center justify-center text-slate-950 font-bold text-xs">
-            {user?.name?.[0] || 'A'}
-          </div>
-          <span className="text-xs font-semibold text-slate-200 hidden sm:inline">{user?.name || 'Alex Rivera'}</span>
-        </Link>
+        {/* User Profile / Login Pill */}
+        {user ? (
+          <Link
+            href="/login"
+            title="User Profile & Session"
+            className="flex items-center space-x-2.5 p-1.5 pr-3 rounded-full bg-surface-muted hover:bg-surface border border-surface-border transition-all hover:border-cyan/40"
+          >
+            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-cyan to-blue-600 flex items-center justify-center text-slate-950 font-bold text-xs">
+              {user.name?.[0] || 'U'}
+            </div>
+            <span className="text-xs font-semibold text-slate-200 hidden sm:inline">{user.name}</span>
+          </Link>
+        ) : (
+          <Link
+            href="/login"
+            className="flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl bg-cyan text-slate-950 font-bold text-xs shadow-glow-cyan transition-transform hover:scale-105"
+          >
+            <LogIn className="w-3.5 h-3.5" />
+            <span>Sign In</span>
+          </Link>
+        )}
       </div>
     </header>
   );

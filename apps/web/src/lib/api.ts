@@ -26,6 +26,8 @@ async function fetchJson<T>(endpoint: string, options?: RequestInit): Promise<T>
 
 export const api = {
   // Auth & Profile
+  login: (email: string, password?: string) => 
+    fetchJson<{ user: UserProfile; tokens: any }>('/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) }),
   getUser: (userId: string = 'user-alex-01') => fetchJson<UserProfile>(`/users/me?userId=${userId}`),
   updateUser: (data: Partial<UserProfile>) => fetchJson<UserProfile>('/users/me', { method: 'PUT', body: JSON.stringify(data) }),
   signupOnboard: (data: OnboardingInput) => fetchJson<{ user: UserProfile; tokens: any }>('/auth/signup', { method: 'POST', body: JSON.stringify(data) }),
