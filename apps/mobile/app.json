@@ -1,0 +1,19 @@
+{
+  "expo": {
+    "name": "FitHealth",
+    "slug": "fithealth-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "backgroundColor": "#070A0E"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "io.fithealth.app"
+    },
+    "android": {
+      "package": "io.fithealth.app"
+    }
+  }
+}

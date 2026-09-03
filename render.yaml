@@ -1,0 +1,32 @@
+services:
+  # FitHealth Express API Gateway
+  - type: web
+    name: fithealth-api
+    runtime: node
+    plan: free
+    buildCommand: npm install --legacy-peer-deps && npm run build --filter=@fithealth/types --filter=@fithealth/three-scenes --filter=@fithealth/api
+    startCommand: npm --prefix apps/api run start
+    healthCheckPath: /health
+    envVars:
+      - key: PORT
+        value: 4000
+      - key: NODE_ENV
+        value: production
+
+  # FitHealth Next.js Web App
+  - type: web
+    name: fithealth-web
+    runtime: node
+    plan: free
+    buildCommand: npm install --legacy-peer-deps && npm run build --filter=@fithealth/types --filter=@fithealth/three-scenes --filter=@fithealth/web
+    startCommand: npm --prefix apps/web run start
+    envVars:
+      - key: PORT
+        value: 3000
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_API_URL
+        fromService:
+          type: web
+          name: fithealth-api
+          property: host

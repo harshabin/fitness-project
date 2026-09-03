@@ -1,0 +1,32 @@
+# --- Stage 1: Build ---
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+# Copy root configurations and lockfile
+COPY package.json package-lock.json turbo.json tsconfig.base.json ./
+
+# Copy packages and API app
+COPY packages/ ./packages/
+COPY apps/api/ ./apps/api/
+
+# Install dependencies and build shared packages + API
+RUN npm ci --legacy-peer-deps
+RUN npm run build --filter=@fithealth/types --filter=@fithealth/three-scenes --filter=@fithealth/api
+
+# --- Stage 2: Production Runner ---
+FROM node:20-alpine AS runner
+
+WORKDIR /app
+ENV NODE_ENV=production
+ENV PORT=4000
+
+# Copy built code and dependencies
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/packages ./packages
+COPY --from=builder /app/apps/api ./apps/api
+
+EXPOSE 4000
+
+CMD ["node", "apps/api/dist/server.js"]
