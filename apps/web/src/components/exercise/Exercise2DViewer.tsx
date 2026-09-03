@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { MuscleActivationMap } from '@fithealth/types';
 import { getExerciseVisual } from '@/lib/exerciseImages';
+import dynamic from 'next/dynamic';
 import { 
   Camera, 
   Maximize2, 
@@ -13,11 +14,25 @@ import {
   Flame, 
   Activity, 
   ShieldCheck, 
-  Sparkles,
-  Info,
-  Layers,
-  ChevronRight
+  Sparkles, 
+  Info, 
+  Layers, 
+  ChevronRight,
+  Box
 } from 'lucide-react';
+
+const Exercise3DViewer = dynamic(
+  () => import('@/components/exercise/Exercise3DViewer').then((m) => m.Exercise3DViewer),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="w-full h-[380px] rounded-3xl bg-surface/50 border border-surface-border flex flex-col items-center justify-center space-y-3">
+        <Activity className="w-8 h-8 text-cyan animate-spin" />
+        <span className="text-xs font-bold text-slate-300">Loading 3D Biomechanical Model...</span>
+      </div>
+    ),
+  }
+);
 
 interface Exercise2DViewerProps {
   exerciseId?: string;
@@ -46,7 +61,7 @@ export const Exercise2DViewer: React.FC<Exercise2DViewerProps> = ({
   commonMistakes = [],
   className = ''
 }) => {
-  const [activeTab, setActiveTab] = useState<'photo' | 'cues' | 'muscles'>('photo');
+  const [activeTab, setActiveTab] = useState<'3d' | 'photo' | 'cues' | 'muscles'>('3d');
   const [isZoomModalOpen, setIsZoomModalOpen] = useState(false);
   const [imageError, setImageError] = useState(false);
 
@@ -59,8 +74,8 @@ export const Exercise2DViewer: React.FC<Exercise2DViewerProps> = ({
       <div className="p-4 border-b border-surface-border flex flex-wrap items-center justify-between gap-2 bg-surface/90 backdrop-blur-md">
         <div className="flex items-center space-x-2">
           <span className="px-2.5 py-1 rounded-full text-[11px] font-bold tracking-wide uppercase bg-cyan/15 border border-cyan/40 text-cyan shadow-glow-cyan flex items-center space-x-1.5">
-            <Camera className="w-3.5 h-3.5" />
-            <span>2D Biomechanical Reference</span>
+            <Box className="w-3.5 h-3.5" />
+            <span>Interactive Biomechanics</span>
           </span>
           <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase bg-crimson/15 text-crimson border border-crimson/30">
             {equipment}
@@ -70,6 +85,17 @@ export const Exercise2DViewer: React.FC<Exercise2DViewerProps> = ({
         {/* View Tabs */}
         <div className="flex items-center bg-surface-muted rounded-xl p-1 border border-surface-border text-xs">
           <button
+            onClick={() => setActiveTab('3d')}
+            className={`px-3 py-1 rounded-lg font-bold transition-all flex items-center space-x-1 ${
+              activeTab === '3d'
+                ? 'bg-cyan text-slate-950 shadow-glow-cyan'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            <Box className="w-3.5 h-3.5" />
+            <span>3D Model</span>
+          </button>
+          <button
             onClick={() => setActiveTab('photo')}
             className={`px-3 py-1 rounded-lg font-semibold transition-all ${
               activeTab === 'photo'
@@ -77,7 +103,7 @@ export const Exercise2DViewer: React.FC<Exercise2DViewerProps> = ({
                 : 'text-slate-400 hover:text-white'
             }`}
           >
-            Visual Reference
+            Photo Guide
           </button>
           <button
             onClick={() => setActiveTab('cues')}
@@ -104,6 +130,17 @@ export const Exercise2DViewer: React.FC<Exercise2DViewerProps> = ({
 
       {/* Main Tab Content */}
       <div className="p-4 sm:p-5">
+        {/* Tab 0: 3D Kinematics Simulation */}
+        {activeTab === '3d' && (
+          <div className="space-y-4 animate-fadeIn">
+            <Exercise3DViewer
+              exerciseId={exerciseId}
+              exerciseName={exerciseName}
+              muscleActivations={muscleActivations}
+            />
+          </div>
+        )}
+
         {/* Tab 1: Photo Reference */}
         {activeTab === 'photo' && (
           <div className="space-y-4 animate-fadeIn">
