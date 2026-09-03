@@ -34,6 +34,7 @@
     "zustand": "^5.0.3"
   },
   "optionalDependencies": {
-    "@next/swc-win32-x64-msvc": "^14.2.24"
+    "@next/swc-linux-x64-gnu": "14.2.24",
+    "@next/swc-win32-x64-msvc": "14.2.24"
   }
 }
